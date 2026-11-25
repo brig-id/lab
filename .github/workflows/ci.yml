@@ -1,0 +1,16 @@
+name: CI
+
+on:
+  push:
+    branches: [main, "dev/*"]
+  pull_request:
+    branches: [main, "dev/*"]
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    uses: brig-id/.github/.github/workflows/ci-web.yml@5e019131d735e4ed0bd3598b5a61137bdae7eff3
+    with:
+      working-directory: .
