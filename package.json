@@ -1,0 +1,32 @@
+{
+  "name": "@brig-id/lab",
+  "description": "brig·id — small experiment pages, not indexed, nothing stored",
+  "license": "AGPL-3.0-or-later",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "packageManager": "pnpm@11.9.0",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "pnpm run build && wrangler dev --ip 0.0.0.0",
+    "deploy": "pnpm run build && wrangler deploy",
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint src scripts test e2e",
+    "test": "node --test \"test/**/*.test.ts\"",
+    "test.e2e": "pnpm run build && playwright test",
+    "fmt": "prettier --write .",
+    "fmt.check": "prettier --check .",
+    "build.server": "pnpm run build"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.62.1",
+    "@types/node": "^24.0.0",
+    "esbuild": "^0.28.2",
+    "oxlint": "^1.93.0",
+    "prettier": "^3.9.10",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.160.0"
+  }
+}

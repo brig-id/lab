@@ -1,0 +1,8 @@
+# Applied by Cloudflare to every file of public/ (Workers static assets).
+# The pages load nothing from another origin and send nothing anywhere.
+/*
+  X-Robots-Tag: noindex, nofollow
+  Content-Security-Policy: default-src 'none'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+  Referrer-Policy: no-referrer
+  X-Content-Type-Options: nosniff
+  Cross-Origin-Opener-Policy: same-origin
