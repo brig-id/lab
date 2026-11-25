@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>PRF measurement · brig·id lab</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="stylesheet" href="/style.css" />
+    <script type="module" src="/prf/main.js"></script>
+  </head>
+  <body>
+    <header class="top">
+      <a class="brand" href="/">brig·id <span>lab</span></a>
+    </header>
+    <main>
+      <section class="hero">
+        <h1>PRF measurement</h1>
+        <p class="lead">
+          This page checks whether a passkey made on this device supports PRF,
+          the WebAuthn extension that lets a passkey give the browser a secret
+          the server never sees. brig·id plans to encrypt what describes your
+          identities with that secret, and needs to know which devices can give
+          it, when the passkey is created and when you sign in.
+        </p>
+        <p class="quiet">
+          It creates a test passkey named <strong>brig·id lab test</strong>, for
+          <span class="mono" id="rp">this site</span> only. Nothing is sent or
+          kept: the page has no server, and forgets everything when it is
+          closed. Delete the test passkey from your password manager afterwards.
+        </p>
+      </section>
+
+      <section class="card" aria-labelledby="device-title">
+        <h2 id="device-title">This device</h2>
+        <table class="facts">
+          <tbody>
+            <tr>
+              <th scope="row">System and browser</th>
+              <td id="device">…</td>
+            </tr>
+            <tr>
+              <th scope="row">Browser says it supports PRF</th>
+              <td id="capability">…</td>
+            </tr>
+          </tbody>
+        </table>
+        <p class="status error" id="unsupported" hidden>
+          This browser has no passkeys (WebAuthn is missing, or the page is not
+          served over HTTPS).
+        </p>
+      </section>
+
+      <section class="card" aria-labelledby="create-title">
+        <h2 id="create-title">1. Create a test passkey</h2>
+        <p class="quiet">
+          Your device asks you to save a passkey for this site. The page asks it
+          for a PRF output at once, with a random salt it keeps in memory.
+        </p>
+        <div class="actions">
+          <button class="button primary" type="button" id="create">
+            Create a test passkey
+          </button>
+        </div>
+        <p class="status" id="create-status" role="status"></p>
+        <table class="facts" id="create-facts" hidden>
+          <tbody>
+            <tr>
+              <th scope="row">Authenticator</th>
+              <td id="authenticator"></td>
+            </tr>
+            <tr>
+              <th scope="row">Attachment</th>
+              <td id="attachment"></td>
+            </tr>
+            <tr>
+              <th scope="row">Synced</th>
+              <td id="synced"></td>
+            </tr>
+            <tr>
+              <th scope="row">PRF enabled</th>
+              <td id="create-enabled"></td>
+            </tr>
+            <tr>
+              <th scope="row">PRF output at creation</th>
+              <td id="create-output"></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="card" aria-labelledby="get-title">
+        <h2 id="get-title">2. Sign in with it</h2>
+        <p class="quiet">
+          The page asks the passkey for a PRF output again, with the same salt.
+          The same passkey and the same salt must give the same output.
+        </p>
+        <div class="actions">
+          <button class="button primary" type="button" id="get" disabled>
+            Sign in with the test passkey
+          </button>
+        </div>
+        <p class="status" id="get-status" role="status"></p>
+        <table class="facts" id="get-facts" hidden>
+          <tbody>
+            <tr>
+              <th scope="row">PRF output at sign-in</th>
+              <td id="get-output"></td>
+            </tr>
+            <tr>
+              <th scope="row">Same as before</th>
+              <td id="get-stable"></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="card" aria-labelledby="result-title">
+        <h2 id="result-title">Result</h2>
+        <p class="quiet">
+          One line to copy into the measurements of
+          <a href="https://github.com/brig-id/spec/issues/22">brig-id/spec#22</a
+          >. It holds no secret: outputs are only said to exist and to match.
+        </p>
+        <code class="result" id="result">…</code>
+        <div class="actions">
+          <button class="button" type="button" id="copy">Copy result</button>
+        </div>
+        <p class="status" id="copy-status" role="status"></p>
+      </section>
+
+      <section class="card" aria-labelledby="proto-title">
+        <h2 id="proto-title">Prototype: encrypt with the passkey</h2>
+        <p class="quiet">
+          What brig·id would do with the output, all in this page's memory. A
+          random data key encrypts the field; the data key is wrapped with a key
+          derived from the PRF output (HKDF-SHA-256, then AES-256-GCM), and then
+          forgotten. Reading the field back needs a new sign-in.
+        </p>
+        <label class="field">
+          A field to encrypt
+          <input
+            id="field"
+            type="text"
+            value="Ada Lovelace"
+            autocomplete="off"
+          />
+        </label>
+        <div class="actions">
+          <button class="button" type="button" id="encrypt" disabled>
+            Encrypt it
+          </button>
+          <button class="button" type="button" id="decrypt" disabled>
+            Sign in and decrypt it
+          </button>
+        </div>
+        <p class="status" id="proto-status" role="status"></p>
+        <table class="facts" id="proto-facts" hidden>
+          <tbody>
+            <tr>
+              <th scope="row">Wrapped data key</th>
+              <td class="mono" id="wrapped"></td>
+            </tr>
+            <tr>
+              <th scope="row">Encrypted field</th>
+              <td class="mono" id="sealed"></td>
+            </tr>
+            <tr>
+              <th scope="row">Decrypted</th>
+              <td id="opened">not yet</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+    <footer>
+      <p>
+        An experiment. No server, no storage, no analytics: the page forgets
+        everything when it is closed.
+      </p>
+      <p>
+        <a href="https://github.com/brig-id/lab">Source code</a> ·
+        <a href="https://brig.id">brig.id</a>
+      </p>
+    </footer>
+  </body>
+</html>
