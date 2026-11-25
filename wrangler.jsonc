@@ -1,0 +1,17 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // The Worker's name on Cloudflare: changing it here alone would deploy a
+  // new, empty Worker. Deployed by .github/workflows/deploy.yml.
+  "name": "brigid-lab",
+  "compatibility_date": "2026-11-01",
+  // Only the custom domain serves the pages.
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [{ "pattern": "lab.brig.id", "custom_domain": true }],
+  // Static files only: there is no Worker script, so nothing runs on the
+  // server and nothing is logged or kept. Headers are in public/_headers.
+  "assets": {
+    "directory": "./public",
+    "not_found_handling": "404-page",
+  },
+}
